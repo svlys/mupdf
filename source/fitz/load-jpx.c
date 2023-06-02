@@ -1010,7 +1010,8 @@ jpx_read_image(fz_context *ctx, fz_jpxd *state, const unsigned char *data, size_
 
 	return img;
 }
-
+#include <pthread.h>
+pthread_mutex_t gMutex = PTHREAD_MUTEX_INITIALIZER;
 fz_pixmap *
 fz_load_jpx(fz_context *ctx, const unsigned char *data, size_t size, fz_colorspace *defcs)
 {
@@ -1019,11 +1020,14 @@ fz_load_jpx(fz_context *ctx, const unsigned char *data, size_t size, fz_colorspa
 
 	fz_try(ctx)
 	{
+		pthread_mutex_lock(&gMutex);
 		opj_lock(ctx);
 		pix = jpx_read_image(ctx, &state, data, size, defcs, 0);
 	}
-	fz_always(ctx)
-		opj_unlock(ctx);
+	fz_always(ctx){
+		 opj_unlock(ctx);
+		 pthread_mutex_unlock(&gMutex);
+	}
 	fz_catch(ctx)
 		fz_rethrow(ctx);
 

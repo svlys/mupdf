@@ -24,7 +24,7 @@ include Makethird
 # Do not specify CFLAGS or LIBS on the make invocation line - specify
 # XCFLAGS or XLIBS instead. Make ignores any lines in the makefile that
 # set a variable that was set on the command line.
-CFLAGS += $(XCFLAGS) -Iinclude
+CFLAGS += $(XCFLAGS) -Iinclude -fPIC -std=gnu99
 LIBS += $(XLIBS) -lm
 
 ifneq ($(threading),no)
